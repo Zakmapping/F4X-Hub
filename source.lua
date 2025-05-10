@@ -1,4 +1,4 @@
-local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/jensonhirst/Orion/main/source')))()
 
 local Window = OrionLib:MakeWindow({
     Name = "F4X Hub",
@@ -6,8 +6,7 @@ local Window = OrionLib:MakeWindow({
     SaveConfig = false,
     ConfigFolder = "F4XHub",
     IntroEnabled = false,
-    IntroText = "F4X Hub",
-    Color = Color3.fromRGB(0, 0, 139) -- Dark blue color
+    IntroText = "F4X Hub"
 })
 
 local Player = game.Players.LocalPlayer
@@ -19,11 +18,8 @@ local espColor = Color3.fromRGB(255, 0, 0)
 local flyConnection, noclipConnection
 
 local TabPlayer = Window:MakeTab({Name = "Player (You)", Icon = "rbxassetid://4483345998", PremiumOnly = false})
-
 local TabShooter = Window:MakeTab({Name = "Shooter Games", Icon = "rbxassetid://4483345998", PremiumOnly = false})
-
 local TabOther = Window:MakeTab({Name = "Other Hacks", Icon = "rbxassetid://4483345998", PremiumOnly = false})
-
 local TabBlox = Window:MakeTab({Name = "Blox Fruits", Icon = "rbxassetid://4483345998", PremiumOnly = false})
 
 TabPlayer:AddSlider({
@@ -31,7 +27,6 @@ TabPlayer:AddSlider({
     Min = 16, 
     Max = 200, 
     Default = 16,
-    Color = Color3.fromRGB(0, 0, 139),
     Increment = 1,
     ValueName = "Speed",
     Callback = function(Value) 
@@ -107,7 +102,6 @@ TabPlayer:AddToggle({
     Callback = function(Value)
         noclip = Value
         if noclip then
-            -- Clean up previous connections
             if noclipConnection then
                 noclipConnection:Disconnect()
                 noclipConnection = nil
@@ -205,7 +199,6 @@ TabPlayer:AddButton({
     end
 })
 
--- Shooter Games Features
 TabShooter:AddColorpicker({
     Name = "ESP Color",
     Default = Color3.fromRGB(255, 0, 0),
@@ -228,7 +221,6 @@ TabShooter:AddToggle({
                     box.AlwaysOnTop = true
                     box.ZIndex = 10
                     box.Transparency = 0.4
-                    box.Parent = plr.Character.HumanoidRootPart
                     
                     if not plr.Character.HumanoidRootPart:FindFirstChild("F4X_ESP") then
                         local folder = Instance.new("Folder")
@@ -262,7 +254,6 @@ TabShooter:AddToggle({
             
             OrionLib:Notify("ESP Enabled!")
         else
-            -- Disable ESP
             for _, plr in pairs(game.Players:GetPlayers()) do
                 if plr ~= Player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
                     local espFolder = plr.Character.HumanoidRootPart:FindFirstChild("F4X_ESP")
@@ -288,7 +279,6 @@ TabShooter:AddSlider({
     Min = 2, 
     Max = 10, 
     Default = 5,
-    Color = Color3.fromRGB(0, 0, 139),
     Increment = 1,
     ValueName = "Size",
     Callback = function(Value)
