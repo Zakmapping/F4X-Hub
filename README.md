@@ -4,7 +4,7 @@ F4X Hub is an Exploit for Roblox that you can use in all games without any probl
 # How to use F4X Hub?!:
 1- First, copy this loadstring below this message and put it in any executor  
 ```lua
-https://raw.githubusercontent.com/Zakmapping/F4X-Hub/refs/heads/main/source.lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Zakmapping/F4X-Hub/refs/heads/main/source.lua"))()
 ```
 2- There are sections in exploit, and each section contains many commands, such as the other hacks section, which contains infinite yield, dex explorer, and others... and sections such as players (you) in which, for example: (changing your speed, flying, skipping walls (noclip) and others... and you can try it yourself 
 
