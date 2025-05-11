@@ -1,6 +1,34 @@
 # F4X-Hub
 F4X Hub is an Exploit for Roblox that you can use in all games without any problems, Made by F4X, a developer with 2 years of experience in Luau programming and is a professional in it. This Exploit will help you a lot. It is also under development and has interface issues
 
+# Available commands:
+
+-- Normal Commands: --
+- Fly
+- NoClip
+- Click to teleport
+- SpeedHack
+- JumpHack
+- Walk In Air
+- ESP
+- Rejoin server 
+- ServerHop
+- InfiniteJump
+- FullBright
+- Remove Fog
+- Set FOV
+- Fake Lag
+- AntiAfk
+- Sit
+
+-- MM2 Commands: --
+- Murderer ESP (Color Changer Available)
+- Sheriff ESP (Color Changer Available)
+
+-- Dead Rails Commands: --
+- Coming soon... 😎
+- Check "Version" File for updates, bug fixes
+
 # How to use F4X Hub?!:
 1- First, copy this loadstring below this message and put it in any executor  
 ```lua
@@ -15,6 +43,7 @@ F4X Hub It was first created using Orion library but due to bugs and problems it
 
 # About F4X Hub:
 - F4X Hub is an (client-side)
+- 20+ Commands
 - Open Source
 - 1 Month of develompent
 
