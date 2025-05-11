@@ -2,6 +2,7 @@
 F4X Hub is an Exploit for Roblox that you can use in all games without any problems, Made by F4X, a developer with 2 years of experience in Luau programming and is a professional in it. This Exploit will help you a lot. It is also under development and has interface issues
 
 ## KEYLESS 😍
+Our exploit is without a key, it is available for free, but there may soon be a key to the exploit if all users accept it. 
 
 # Available commands:
 
