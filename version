@@ -1,1 +1,13 @@
-F4X Hub Version = "V 1.0.0"
+-- ✨ Current F4X Hub Version: V1.0.0 Beta ✨ --
+
+# V1.0.0 (Beta Update):
+- New UI Revamp
+- New Commands (murderer esp, sheriff esp, etc...)
+- New Library Used (old library "orion library" / current used library "rayfield")
+
+-- Bug Fixes 😎: --
+- Fixed Murderer, Sheriff ESP
+- Fixed Murderer, Sheriff Color Changer
+- Fixed NoClip Command
+- Fixed SpeedHack Slider
+
