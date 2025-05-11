@@ -22,11 +22,15 @@ Our exploit is without a key, it is available for free, but there may soon be a 
 - Set FOV
 - Fake Lag
 - AntiAfk
+- Skybox Changer [NEW]
+- AutoClicker [NEW]
+- FPS Booster [NEW]
 - Sit
 
 -- MM2 Commands: --
 - Murderer ESP (Color Changer Available)
 - Sheriff ESP (Color Changer Available)
+- Aimbot Players
 
 -- Dead Rails Commands: --
 - Coming soon... 😎
