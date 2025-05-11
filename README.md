@@ -1,5 +1,5 @@
 # F4X-Hub
-F4X Hub is an Exploit for Roblox that you can use in all games without any problems, Made by F4X, a developer with 2 years of experience in Luau programming and is a professional in it. This Exploit will help you a lot. It is also under development and has interface issues and so on. Many thanks to Orion Library for enabling me to build a simple Exploit.
+F4X Hub is an Exploit for Roblox that you can use in all games without any problems, Made by F4X, a developer with 2 years of experience in Luau programming and is a professional in it. This Exploit will help you a lot. It is also under development and has interface issues
 
 # How to use F4X Hub?!:
 1- First, copy this loadstring below this message and put it in any executor  
@@ -11,7 +11,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/Zakmapping/F4X-Hub/re
 3- The exploit works on all executors, but currently we advise you not to use executors due to Roblox's new protection system. 
 
 # How F4X Hub made with?!:
-F4X Hub was created using the Orion library and some scripts that I created myself. 
+F4X Hub It was first created using Orion library but due to bugs and problems it had, we changed and now we use Rayfield. 
 
 # About F4X Hub:
 - F4X Hub is an (client-side)
