@@ -6,37 +6,40 @@ Our exploit is without a key, it is available for free, but there may soon be a 
 
 # Available commands:
 
--- Normal Commands: --
+-- Hacking Commands: --
 - Fly
 - NoClip
-- Click to teleport
 - SpeedHack
-- JumpHack
-- Walk In Air
+- Infinite Jump
+- Click to teleport
+- Jumphack
+- Exit Roblox
+- Swim In Air
+- ChatLogs
+- Spam Text
 - ESP
-- Rejoin server 
-- ServerHop
-- InfiniteJump
-- FullBright
+- FreeCam
+- Fov
+- Anti Lag
+- Btools [CLIENT]
+- F3X [CLIENT]
 - Remove Fog
-- Set FOV
-- Fake Lag
-- AntiAfk
-- Skybox Changer [NEW]
-- AutoClicker [NEW]
-- FPS Booster [NEW]
-- Sit
+- Player to kill
+- Fling
+- God
+- Naked [CLIENT]
+- Spin
+- Rejoin
+- Anti Afk
+- Server Age
+- Friend Player
+- JoinDate
+- Day [CLIENT]
+- Night [CLIENT]
+- Get User ID
 
--- MM2 Commands: --
-- Murderer ESP (Color Changer Available)
-- Sheriff ESP (Color Changer Available)
-- Aimbot Players
-
--- Dead Rails Commands: --
-- Coming soon... 😎
-- Check "Version" File for updates, bug fixes
-
-# How to use F4X Hub?!:
+# FAQ:
+## 1- How to use F4X Hub?!:
 1- First, copy this loadstring below this message and put it in any executor  
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Zakmapping/F4X-Hub/refs/heads/main/source.lua"))()
@@ -45,13 +48,9 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/Zakmapping/F4X-Hub/re
 
 3- The exploit works on all executors, but currently we advise you not to use executors due to Roblox's new protection system. 
 
-# How F4X Hub made with?!:
-F4X Hub It was first created using Orion library but due to bugs and problems it had, we changed and now we use Rayfield. 
 
 # About F4X Hub:
-- F4X Hub is an (client-side)
-- 20+ Commands
+- F4X Hub Roblox Exploit
+- 30+ Commands
 - Open Source
-- 1 Month of develompent
-
-if there any bugs contant with us in our discord server
+- Created by "F4X" (Python, Luau Developer)
