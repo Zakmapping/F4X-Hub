@@ -176,6 +176,8 @@ local function StopFlying()
     TouchControls = {}
 end
 
+local MovementSection = MainTab:CreateSection("Movement")
+
 MovementSection:CreateToggle({
     Name = "Fly (1)",
     CurrentValue = false,
