@@ -1512,13 +1512,41 @@ UtilitySection:CreateButton({
     Name = "Server Hop (29)",
     Callback = function()
         local servers = {}
-        for _, v in pairs(game:GetService("HttpService"):JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")).data do
-            if v.playing < v.maxPlayers and v.id ~= game.JobId then
-                table.insert(servers, v.id)
+        -- Added error handling and proper URL formatting
+        local success, response = pcall(function()
+            return game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")
+        end)
+        
+        if success then
+            local data = game:GetService("HttpService"):JSONDecode(response)
+            if data and data.data then
+                for _, v in pairs(data.data) do
+                    if v.playing and v.maxPlayers and v.id ~= game.JobId then
+                        if v.playing < v.maxPlayers then
+                            table.insert(servers, v.id)
+                        end
+                    end
+                end
+                
+                if #servers > 0 then
+                    game:GetService("TeleportService"):TeleportToPlaceInstance(
+                        game.PlaceId, 
+                        servers[math.random(1, #servers)]
+                    )
+                else
+                    Rayfield:Notify({
+                        Title = "Server Hop",
+                        Content = "No available servers found.",
+                        Duration = 5,
+                    })
+                end
             end
-        end
-        if #servers > 0 then
-            game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, servers[math.random(1, #servers)])
+        else
+            Rayfield:Notify({
+                Title = "Error",
+                Content = "Failed to fetch server list: " .. tostring(response),
+                Duration = 5,
+            })
         end
     end
 })
