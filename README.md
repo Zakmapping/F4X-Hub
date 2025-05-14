@@ -21,7 +21,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/Zakmapping/F4X-Hub/re
 3- You can only use the exploit in Delta, and the reason is: because Roblox added a new protection that prevents executers, and Delta bypassed the protection. 
 
 ## Why do some commands tell me Callback error?:
-Because it is the function responsible for each command, it may disrupt the command and prevent it from working. We are trying to fix the problem quickly, and it will be fixed in the next update. 
+We discovered that the Callback error problem is not from our scripts but from the Rayfield library.  
 
 ## Is this exploit Clientside or Serverside?!:
 This exploit is clientside because the library used only supports clientside and in the future I may see a solution to make the exploit serverside. 
