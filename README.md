@@ -12,7 +12,7 @@ Our exploit is without a key, it is available for free, but there may soon be a 
 
 # FAQ:
 ## 1- How to use F4X Hub?!:
-1- First, copy this loadstring below this message and put it in any executor  
+1- First, copy this loadstring below this message and put it in any executor (works on delta only)
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Zakmapping/F4X-Hub/refs/heads/main/source.lua"))()
 ```
