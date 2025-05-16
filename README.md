@@ -13,7 +13,7 @@ Our exploit is without a key, it is available for free, but there may soon be a 
 
 ## Server Exploits:
 - Ban All Players
-- Kick All Playerq
+- Kick All Players
 
 ## Fun Commands:
 - Fling
