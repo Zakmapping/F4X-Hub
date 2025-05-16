@@ -363,6 +363,54 @@ ExploitTab:CreateButton({
     end
 })
 
+local function AntiBan()
+    for _, v in pairs(getgc(true)) do
+        if type(v) == "table" and rawget(v, "FireServer") then
+            local original = v.FireServer
+            v.FireServer = function(self, ...)
+                local args = {...}
+                if type(args[1]) == "string" and args[1]:lower():find("ban") then
+                    return nil -- Block ban commands
+                end
+                return original(self, ...)
+            end
+        end
+    end
+
+    if hookfunction then
+        hookfunction(game.HttpService.JSONEncode, function(...)
+            local args = {...}
+            if type(args[1]) == "table" and args[1].reason and args[1].reason:lower():find("ban") then
+                return "{}"
+            end
+            return game.HttpService.JSONEncode(...)
+        end)
+    end
+
+    if setfflag then
+        setfflag("HardwareDeviceId", tostring(math.random(1e9, 1e10)))
+        setfflag("HardwareDeviceName", "Generic Device")
+    end
+
+    local player = game:GetService("Players").LocalPlayer
+    if player then
+        player:GetPropertyChangedSignal("UserId"):Connect(function()
+            player.UserId = 1 -- Fake ID
+        end)
+    end
+
+    -- Clean existing logs
+    for _, v in pairs(getgc(true)) do
+        if type(v) == "table" and rawget(v, "Clear") then
+            pcall(v.Clear, v)
+        end
+    end
+
+    warn("F4X AntiBan: Protection activated")
+end
+
+AntiBan()
+
 -- ===== [ FINAL NOTIFICATION ] ===== --
 Rayfield:Notify({
     Title = "F4X Hub Loaded",
