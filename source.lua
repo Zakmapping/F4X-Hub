@@ -4,39 +4,51 @@
   Server Side Exploit
 ]]
 
--- Ultra Strong Anti-Detection
+-- Ultra Strong Anti-Detection (New Encrypted Anti-Protection-Detection)
+
 do
-    if not getgenv then 
-        getgenv = function() 
-            local env = (_G or _ENV or getfenv())
-            env.F4X_SecureMode = true
+    if not getgenv then
+        local function GenerateSecureEnv()
+            local _={}
+            for i=1,math.random(5,10) do _[tostring(i)]=math.random() end
+            return setmetatable({},{
+                __index=function(t,k)
+                    local k_=tostring(k):reverse()
+                    if k_=="edoMeruceS" then return true end
+                    if k_=="TCETID_ITNA__" then return true end
+                    if k_=="4XF" then return {SecureMode=true} end
+                    return (_G or _ENV or getfenv(2))[k]
+                end,
+                __newindex=function(t,k,v)
+                    local k_=tostring(k):reverse()
+                    if k_:find("Detect") or k_:find("Ban") then return end
+                    rawset(_G or _ENV or getfenv(2),k,v)
+                end
+            })
+        end
+      
+        getgenv = function()
+            local env = GenerateSecureEnv()
+            env.F4X = env.F4X or {SecureMode=true}
             env.__ANTI_DETECT = true
-            return env 
-        end 
-    end
-    
-    local fakeEnv = {
-        crypt = {
-            encrypt = function(x) return "SECURE_"..x end,
-            decrypt = function(x) return x:gsub("SECURE_", "") end
-        },
-        hookfunction = function(f, newf) return newf end,
-        checkcaller = function() return false end,
-        is_synapse = function() return false end,
-        is_proto = function() return false end,
-        debug = {
-            traceback = function() return "No debug available" end
-        }
-    }
-    
-    for k, v in pairs(fakeEnv) do
-        getgenv()[k] = v
-    end
-    
-    -- Anti-analysis
-    if setfflag then
-        setfflag("DebugDisableAssemblyCodeAnalysis", "True")
-        setfflag("DebugDisableElfAnalysis", "True")
+          
+            if setfflag then
+                for _,f in pairs({
+                    "DebugDisableAssemblyCodeAnalysis",
+                    "DebugDisableElfAnalysis",
+                    "DebugDisableLoadLibraryAnalysis"
+                }) do
+                    pcall(setfflag,f,"True")
+                end
+            end
+          
+            if hookfunction then
+                hookfunction(print,function()end)
+                hookfunction(warn,function()end)
+            end
+            
+            return env
+        end
     end
 end
 
