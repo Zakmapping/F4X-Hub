@@ -1,7 +1,3 @@
---[[
-Before you start reading or testing the script, go to the ReadME file for more information. 
-]]
-
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -27,7 +23,6 @@ local Window = Rayfield:CreateWindow({
 
 local MM2 = Window:CreateTab("MM2 Commands", 10626050781)
 local DeadRails = Window:CreateTab("Dead Rails", 10626050781)
-local Others = Window:CreateTab("Others", 10626050781)
 
 -- MM2 Section
 local MM2Section = MM2:CreateSection("ESP")
@@ -49,15 +44,38 @@ local MurdererToggle = MM2:CreateToggle({
     Flag = "MurdererESP",
     Callback = function(Value)
         _G.MurdererESP = Value
+        if not Value then
+            -- Remove all murderer ESP highlights when disabled
+            for _, player in ipairs(Players:GetPlayers()) do
+                if player.Character then
+                    local highlight = player.Character:FindFirstChild(player.Name .. "_MurdererESP")
+                    if highlight then highlight:Destroy() end
+                end
+            end
+        else
+            updateESP()
+        end
     end,
 })
 
 local MurdererColorPicker = MM2:CreateColorPicker({
-    Name = "Select Murderer ESP",
+    Name = "Murderer ESP Color",
     Color = Color3.fromRGB(255, 0, 0),
-    Flag = "MurdererColor1",
+    Flag = "MurdererColor",
     Callback = function(Value)
         _G.MurdererColor = Value
+        -- Update existing murderer highlights
+        if _G.MurdererESP then
+            for _, player in ipairs(Players:GetPlayers()) do
+                if player.Character then
+                    local highlight = player.Character:FindFirstChild(player.Name .. "_MurdererESP")
+                    if highlight then
+                        highlight.FillColor = Value
+                        highlight.OutlineColor = Value
+                    end
+                end
+            end
+        end
     end
 })
 
@@ -68,16 +86,39 @@ local SheriffToggle = MM2:CreateToggle({
     Flag = "SheriffESP",
     Callback = function(Value)
         _G.SheriffESP = Value
+        if not Value then
+            -- Remove all sheriff ESP highlights when disabled
+            for _, player in ipairs(Players:GetPlayers()) do
+                if player.Character then
+                    local highlight = player.Character:FindFirstChild(player.Name .. "_SheriffESP")
+                    if highlight then highlight:Destroy() end
+                end
+            end
+        else
+            updateESP()
+        end
     end,
 })
 
 local SheriffColorPicker = MM2:CreateColorPicker({
-    Name = "Select Sheriff ESP",
+    Name = "Sheriff ESP Color",
     Color = Color3.fromRGB(0, 0, 255),
-    Flag = "SheriffColor2",
+    Flag = "SheriffColor",
     Callback = function(Value)
         _G.SheriffColor = Value
-    end,
+        -- Update existing sheriff highlights
+        if _G.SheriffESP then
+            for _, player in ipairs(Players:GetPlayers()) do
+                if player.Character then
+                    local highlight = player.Character:FindFirstChild(player.Name .. "_SheriffESP")
+                    if highlight then
+                        highlight.FillColor = Value
+                        highlight.OutlineColor = Value
+                    end
+                end
+            end
+        end
+    end
 })
 
 local function hasKnife(player)
@@ -85,7 +126,7 @@ local function hasKnife(player)
     if not character then return false end
     
     for _, tool in ipairs(character:GetChildren()) do
-        if tool:IsA("Tool") and string.find(tool.Name:lower(), "knife") then
+        if tool:IsA("Tool") and (string.find(tool.Name:lower(), "knife") or tool.Name == "Knife") then
             return true
         end
     end
@@ -97,19 +138,25 @@ local function hasGun(player)
     if not character then return false end
     
     for _, tool in ipairs(character:GetChildren()) do
-        if tool:IsA("Tool") and string.find(tool.Name:lower(), "gun") then
+        if tool:IsA("Tool") and (string.find(tool.Name:lower(), "gun") or tool.Name == "Gun") then
             return true
         end
     end
     return false
 end
 
-local function createESP(player, color)
+local function createESP(player, espType, color)
     local character = player.Character
     if not character then return nil end
     
+    local highlightName = player.Name .. "_" .. espType .. "ESP"
+    
+    -- Remove existing highlight if it exists
+    local existingHighlight = character:FindFirstChild(highlightName)
+    if existingHighlight then existingHighlight:Destroy() end
+    
     local highlight = Instance.new("Highlight")
-    highlight.Name = player.Name .. "_ESP"
+    highlight.Name = highlightName
     highlight.FillTransparency = 0.7
     highlight.OutlineTransparency = 0
     highlight.FillColor = color
@@ -119,13 +166,16 @@ local function createESP(player, color)
     player.CharacterAdded:Connect(function(newChar)
         if highlight then highlight:Destroy() end
         task.wait(1) -- Wait for character to fully load
-        highlight = Instance.new("Highlight")
-        highlight.Name = player.Name .. "_ESP"
-        highlight.FillTransparency = 0.7
-        highlight.OutlineTransparency = 0
-        highlight.FillColor = color
-        highlight.OutlineColor = color
-        highlight.Parent = newChar
+        
+        if (espType == "Murderer" and _G.MurdererESP) or (espType == "Sheriff" and _G.SheriffESP) then
+            highlight = Instance.new("Highlight")
+            highlight.Name = highlightName
+            highlight.FillTransparency = 0.7
+            highlight.OutlineTransparency = 0
+            highlight.FillColor = color
+            highlight.OutlineColor = color
+            highlight.Parent = newChar
+        end
     end)
     
     return highlight
@@ -135,36 +185,28 @@ local function updateESP()
     for _, player in ipairs(Players:GetPlayers()) do
         if player ~= Players.LocalPlayer then
             if player.Character then
-                local oldHighlight = player.Character:FindFirstChild(player.Name .. "_ESP")
-                if oldHighlight then oldHighlight:Destroy() end
+                -- Remove old highlights
+                local oldMurdererHighlight = player.Character:FindFirstChild(player.Name .. "_MurdererESP")
+                if oldMurdererHighlight then oldMurdererHighlight:Destroy() end
                 
+                local oldSheriffHighlight = player.Character:FindFirstChild(player.Name .. "_SheriffESP")
+                if oldSheriffHighlight then oldSheriffHighlight:Destroy() end
+                
+                -- Create new highlights if enabled
                 if _G.MurdererESP and hasKnife(player) then
-                    createESP(player, _G.MurdererColor)
+                    createESP(player, "Murderer", _G.MurdererColor)
                 end
                 
                 if _G.SheriffESP and hasGun(player) then
-                    createESP(player, _G.SheriffColor)
+                    createESP(player, "Sheriff", _G.SheriffColor)
                 end
             end
         end
     end
 end
 
-RunService.Heartbeat:Connect(function()
-    if _G.MurdererESP or _G.SheriffESP then
-        updateESP()
-    end
-end)
-
-Players.PlayerAdded:Connect(function(player)
-    player.CharacterAdded:Connect(function()
-        if _G.MurdererESP or _G.SheriffESP then
-            updateESP()
-        end
-    end)
-end)
-
-for _, player in ipairs(Players:GetPlayers()) do
+-- Connect events for ESP updates
+local function setupPlayerConnections(player)
     player.CharacterAdded:Connect(function()
         if _G.MurdererESP or _G.SheriffESP then
             updateESP()
@@ -172,8 +214,27 @@ for _, player in ipairs(Players:GetPlayers()) do
     end)
 end
 
+-- Setup connections for existing players
+for _, player in ipairs(Players:GetPlayers()) do
+    setupPlayerConnections(player)
+end
+
+-- Setup connections for new players
+Players.PlayerAdded:Connect(function(player)
+    setupPlayerConnections(player)
+end)
+
+-- Main ESP update loop
+RunService.Heartbeat:Connect(function()
+    if _G.MurdererESP or _G.SheriffESP then
+        updateESP()
+    end
+end)
+
+-- بقية السكريبت تبقى كما هي بدون تغيير...
 -- EZ Win Section
 local EZSection = MM2:CreateSection("EZ Win")
+
 local Aimbot = MM2:CreateToggle({
     Name = "Aimbot",
     CurrentValue = false,
@@ -182,54 +243,27 @@ local Aimbot = MM2:CreateToggle({
         _G.AimbotEnabled = Value
         
         if Value then
-            local player = game:GetService("Players").LocalPlayer
-            local mouse = player:GetMouse()
-            local camera = workspace.CurrentCamera
-            
-            mouse.Button2Down:Connect(function()
-                if not _G.AimbotEnabled then return end
-                
-                local closestPlayer = nil
-                local closestDistance = math.huge
-                local localChar = player.Character
-                if not localChar then return end
-                local localRoot = localChar:FindFirstChild("HumanoidRootPart")
-                if not localRoot then return end
-                
-                for _, target in pairs(game:GetService("Players"):GetPlayers()) do
-                    if target ~= player and target.Character then
-                        local targetChar = target.Character
-                        local targetRoot = targetChar:FindFirstChild("HumanoidRootPart")
-                        local targetHead = targetChar:FindFirstChild("Head")
-                        
-                        if targetRoot and targetHead then
-                            local distance = (localRoot.Position - targetRoot.Position).Magnitude
+            spawn(function()
+                while _G.AimbotEnabled and task.wait() do
+                    local closestPlayer = nil
+                    local closestDistance = math.huge
+                    local localPlayer = game.Players.LocalPlayer
+                    local localChar = localPlayer.Character
+                    
+                    if not localChar or not localChar:FindFirstChild("HumanoidRootPart") then continue end
+                    
+                    for _, player in pairs(game.Players:GetPlayers()) do
+                        if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                            local distance = (localChar.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
                             if distance < closestDistance then
                                 closestDistance = distance
-                                closestPlayer = target
+                                closestPlayer = player
                             end
                         end
                     end
-                end
-                
-                if closestPlayer then
-                    local targetChar = closestPlayer.Character
-                    local targetHead = targetChar:FindFirstChild("Head")
                     
-                    if targetHead then
-                        local con
-                        con = game:GetService("RunService").RenderStepped:Connect(function()
-                            if not _G.AimbotEnabled or not mouse.Button2Pressed then
-                                con:Disconnect()
-                                return
-                            end
-                            
-                            if targetHead and targetHead.Parent and targetHead.Parent:FindFirstChild("Humanoid") and targetHead.Parent.Humanoid.Health > 0 then
-                                camera.CFrame = CFrame.new(camera.CFrame.Position, targetHead.Position)
-                            else
-                                con:Disconnect()
-                            end
-                        end)
+                    if closestPlayer and closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        localChar.HumanoidRootPart.CFrame = CFrame.new(localChar.HumanoidRootPart.Position, closestPlayer.Character.HumanoidRootPart.Position)
                     end
                 end
             end)
@@ -412,7 +446,7 @@ local ZombieColorPicker = DeadRails:CreateColorPicker({
     Color = Color3.fromRGB(255, 0, 0),
     Flag = "ZombieColor1",
     Callback = function(Value)
-        _G.ZombieColor = Value
+        _G.MurdererColor = Value
         if _G.ZombieESPEnabled then
             for _, obj in pairs(workspace:GetDescendants()) do
                 if obj:FindFirstChild("ZombieHighlight") then
@@ -482,93 +516,6 @@ local GoldColorPicker = DeadRails:CreateColorPicker({
             end
         end
     end
-})
-
-local OthersSection = Others:CreateSection("Player Modifications")
-local FlyToggle = Others:CreateToggle({
-    Name = "Fly",
-    CurrentValue = false,
-    Flag = "FlyToggle",
-    Callback = function(Value)
-        _G.FlyEnabled = Value
-        local player = game:GetService("Players").LocalPlayer
-        local character = player.Character or player.CharacterAdded:Wait()
-        
-        if Value then
-            local bodyVelocity = Instance.new("BodyVelocity")
-            bodyVelocity.Velocity = Vector3.new(0, 0, 0)
-            bodyVelocity.MaxForce = Vector3.new(0, 0, 0)
-            bodyVelocity.Parent = character:FindFirstChild("HumanoidRootPart")
-            
-            local userInput = game:GetService("UserInputService")
-            local control = {Forward = 0, Backward = 0, Left = 0, Right = 0}
-            local flySpeed = 50
-            
-            local flyConnection = userInput.InputBegan:Connect(function(input, gameProcessed)
-                if gameProcessed then return end
-                
-                if input.KeyCode == Enum.KeyCode.W then
-                    control.Forward = 1
-                elseif input.KeyCode == Enum.KeyCode.S then
-                    control.Backward = -1
-                elseif input.KeyCode == Enum.KeyCode.A then
-                    control.Left = -1
-                elseif input.KeyCode == Enum.KeyCode.D then
-                    control.Right = 1
-                elseif input.KeyCode == Enum.KeyCode.Space then
-                    bodyVelocity.Velocity = Vector3.new(0, flySpeed, 0)
-                elseif input.KeyCode == Enum.KeyCode.LeftShift then
-                    bodyVelocity.Velocity = Vector3.new(0, -flySpeed, 0)
-                end
-            end)
-            
-            local flyEndConnection = userInput.InputEnded:Connect(function(input)
-                if input.KeyCode == Enum.KeyCode.W then
-                    control.Forward = 0
-                elseif input.KeyCode == Enum.KeyCode.S then
-                    control.Backward = 0
-                elseif input.KeyCode == Enum.KeyCode.A then
-                    control.Left = 0
-                elseif input.KeyCode == Enum.KeyCode.D then
-                    control.Right = 0
-                elseif input.KeyCode == Enum.KeyCode.Space or input.KeyCode == Enum.KeyCode.LeftShift then
-                    bodyVelocity.Velocity = Vector3.new(0, 0, 0)
-                end
-            end)
-            
-            local renderStepped = game:GetService("RunService").RenderStepped:Connect(function()
-                if not _G.FlyEnabled then return end
-                
-                local rootPart = character:FindFirstChild("HumanoidRootPart")
-                if rootPart then
-                    local cf = workspace.CurrentCamera.CFrame
-                    local direction = (cf.LookVector * (control.Forward + control.Backward) + 
-                                     cf.RightVector * (control.Left + control.Right))
-                    direction = direction.Unit
-                    
-                    bodyVelocity.Velocity = direction * flySpeed
-                end
-            end)
-            
-            _G.FlyConnections = {flyConnection, flyEndConnection, renderStepped}
-        else
-            if _G.FlyConnections then
-                for _, conn in pairs(_G.FlyConnections) do
-                    conn:Disconnect()
-                end
-                _G.FlyConnections = nil
-            end
-            
-            local rootPart = character:FindFirstChild("HumanoidRootPart")
-            if rootPart then
-                for _, v in pairs(rootPart:GetChildren()) do
-                    if v:IsA("BodyVelocity") then
-                        v:Destroy()
-                    end
-                end
-            end
-        end
-    end,
 })
 
 local NoClipToggle = Others:CreateToggle({
