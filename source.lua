@@ -587,4 +587,57 @@ local FlyToggle = Others:CreateToggle({
     end,
 })
 
+local NoClipToggle = Others:CreateToggle({
+    Name = "NoClip",
+    CurrentValue = false,
+    Flag = "NoClipToggle",
+    Callback = function(Value)
+        _G.NoClipEnabled = Value
+        if Value then
+            game:GetService("RunService").Stepped:Connect(function()
+                if _G.NoClipEnabled and game.Players.LocalPlayer.Character then
+                    for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+                        if v:IsA("BasePart") then
+                            v.CanCollide = false
+                        end
+                    end
+                end
+            end)
+        end
+    end,
+})
+
+local SpeedInput = Others:CreateInput({
+    Name = "Speed Hack",
+    PlaceholderText = "Enter speed value",
+    RemoveTextAfterFocusLost = false,
+    Callback = function(Text)
+        local speed = tonumber(Text)
+        if speed and game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = speed
+        end
+    end,
+})
+
+local DayButton = Others:CreateButton({
+    Name = "Day (Client)",
+    Callback = function()
+        game:GetService("Lighting").ClockTime = 14
+        game:GetService("Lighting").Brightness = 1
+        game:GetService("Lighting").Ambient = Color3.fromRGB(255, 255, 255)
+        game:GetService("Lighting").OutdoorAmbient = Color3.fromRGB(255, 255, 255)
+    end,
+})
+
+local NightButton = Others:CreateButton({
+    Name = "Night (Client)",
+    Callback = function()
+        game:GetService("Lighting").ClockTime = 0
+        game:GetService("Lighting").Brightness = 0.1
+        game:GetService("Lighting").Ambient = Color3.fromRGB(50, 50, 50)
+        game:GetService("Lighting").OutdoorAmbient = Color3.fromRGB(50, 50, 50)
+    end,
+})
+
+
 Rayfield:LoadConfiguration()
