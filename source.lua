@@ -174,7 +174,6 @@ end
 
 -- EZ Win Section
 local EZSection = MM2:CreateSection("EZ Win")
-
 local Aimbot = MM2:CreateToggle({
     Name = "Aimbot",
     CurrentValue = false,
@@ -183,27 +182,54 @@ local Aimbot = MM2:CreateToggle({
         _G.AimbotEnabled = Value
         
         if Value then
-            spawn(function()
-                while _G.AimbotEnabled and task.wait() do
-                    local closestPlayer = nil
-                    local closestDistance = math.huge
-                    local localPlayer = game.Players.LocalPlayer
-                    local localChar = localPlayer.Character
-                    
-                    if not localChar or not localChar:FindFirstChild("HumanoidRootPart") then continue end
-                    
-                    for _, player in pairs(game.Players:GetPlayers()) do
-                        if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                            local distance = (localChar.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+            local player = game:GetService("Players").LocalPlayer
+            local mouse = player:GetMouse()
+            local camera = workspace.CurrentCamera
+            
+            mouse.Button2Down:Connect(function()
+                if not _G.AimbotEnabled then return end
+                
+                local closestPlayer = nil
+                local closestDistance = math.huge
+                local localChar = player.Character
+                if not localChar then return end
+                local localRoot = localChar:FindFirstChild("HumanoidRootPart")
+                if not localRoot then return end
+                
+                for _, target in pairs(game:GetService("Players"):GetPlayers()) do
+                    if target ~= player and target.Character then
+                        local targetChar = target.Character
+                        local targetRoot = targetChar:FindFirstChild("HumanoidRootPart")
+                        local targetHead = targetChar:FindFirstChild("Head")
+                        
+                        if targetRoot and targetHead then
+                            local distance = (localRoot.Position - targetRoot.Position).Magnitude
                             if distance < closestDistance then
                                 closestDistance = distance
-                                closestPlayer = player
+                                closestPlayer = target
                             end
                         end
                     end
+                end
+                
+                if closestPlayer then
+                    local targetChar = closestPlayer.Character
+                    local targetHead = targetChar:FindFirstChild("Head")
                     
-                    if closestPlayer and closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                        localChar.HumanoidRootPart.CFrame = CFrame.new(localChar.HumanoidRootPart.Position, closestPlayer.Character.HumanoidRootPart.Position)
+                    if targetHead then
+                        local con
+                        con = game:GetService("RunService").RenderStepped:Connect(function()
+                            if not _G.AimbotEnabled or not mouse.Button2Pressed then
+                                con:Disconnect()
+                                return
+                            end
+                            
+                            if targetHead and targetHead.Parent and targetHead.Parent:FindFirstChild("Humanoid") and targetHead.Parent.Humanoid.Health > 0 then
+                                camera.CFrame = CFrame.new(camera.CFrame.Position, targetHead.Position)
+                            else
+                                con:Disconnect()
+                            end
+                        end)
                     end
                 end
             end)
@@ -465,123 +491,81 @@ local FlyToggle = Others:CreateToggle({
     Flag = "FlyToggle",
     Callback = function(Value)
         _G.FlyEnabled = Value
+        local player = game:GetService("Players").LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        
         if Value then
-            -- Fly Script
-            local plr = game:GetService("Players").LocalPlayer
-            local mouse = plr:GetMouse()
-            localplayer = plr
+            local bodyVelocity = Instance.new("BodyVelocity")
+            bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+            bodyVelocity.MaxForce = Vector3.new(0, 0, 0)
+            bodyVelocity.Parent = character:FindFirstChild("HumanoidRootPart")
             
-            if workspace:FindFirstChild("Core") then
-                workspace.Core:Destroy()
-            end
+            local userInput = game:GetService("UserInputService")
+            local control = {Forward = 0, Backward = 0, Left = 0, Right = 0}
+            local flySpeed = 50
             
-            local Core = Instance.new("Part")
-            Core.Name = "Core"
-            Core.Size = Vector3.new(0.05, 0.05, 0.05)
-            
-            spawn(function()
-                Core.Parent = workspace
-                local Weld = Instance.new("Weld", Core)
-                Weld.Part0 = Core
-                Weld.Part1 = localplayer.Character.LowerTorso
-                Weld.C0 = CFrame.new(0, 0, 0)
-            end)
-            
-            workspace:WaitForChild("Core")
-            
-            local torso = workspace.Core
-            flying = true
-            local speed=10
-            local keys={a=false,d=false,w=false,s=false}
-            local e1
-            local e2
-            local function start()
-                local pos = Instance.new("BodyPosition",torso)
-                local gyro = Instance.new("BodyGyro",torso)
-                pos.Name="EPIXPOS"
-                pos.maxForce = Vector3.new(math.huge, math.huge, math.huge)
-                pos.position = torso.Position
-                gyro.maxTorque = Vector3.new(9e9, 9e9, 9e9)
-                gyro.cframe = torso.CFrame
-                repeat
-                    wait()
-                    localplayer.Character.Humanoid.PlatformStand=true
-                    local new=gyro.cframe - gyro.cframe.p + pos.position
-                    if not keys.w and not keys.s and not keys.a and not keys.d then
-                        speed=5
-                    end
-                    if keys.w then
-                        new = new + workspace.CurrentCamera.CoordinateFrame.lookVector * speed
-                        speed=speed+0.1
-                    end
-                    if keys.s then
-                        new = new - workspace.CurrentCamera.CoordinateFrame.lookVector * speed
-                        speed=speed+0.1
-                    end
-                    if keys.d then
-                        new = new * CFrame.new(speed,0,0)
-                        speed=speed+0.1
-                    end
-                    if keys.a then
-                        new = new * CFrame.new(-speed,0,0)
-                        speed=speed+0.1
-                    end
-                    if speed>10 then
-                        speed=7
-                    end
-                    pos.position=new.p
-                    if keys.w then
-                        gyro.cframe = workspace.CurrentCamera.CoordinateFrame*CFrame.Angles(-math.rad(speed*0),0,0)
-                    elseif keys.s then
-                        gyro.cframe = workspace.CurrentCamera.CoordinateFrame*CFrame.Angles(math.rad(speed*0),0,0)
-                    else
-                        gyro.cframe = workspace.CurrentCamera.CoordinateFrame
-                    end
-                until flying == false
-                if gyro then gyro:Destroy() end
-                if pos then pos:Destroy() end
-                flying=false
-                localplayer.Character.Humanoid.PlatformStand=false
-                speed=10
-            end
-            e1=mouse.KeyDown:connect(function(key)
-                if not torso or not torso.Parent then flying=false e1:disconnect() e2:disconnect() return end
-                if key=="w" then
-                    keys.w=true
-                elseif key=="s" then
-                    keys.s=true
-                elseif key=="a" then
-                    keys.a=true
-                elseif key=="d" then
-                    keys.d=true
-                elseif key=="x" then
-                    if flying==true then
-                        flying=false
-                    else
-                        flying=true
-                        start()
-                    end
+            local flyConnection = userInput.InputBegan:Connect(function(input, gameProcessed)
+                if gameProcessed then return end
+                
+                if input.KeyCode == Enum.KeyCode.W then
+                    control.Forward = 1
+                elseif input.KeyCode == Enum.KeyCode.S then
+                    control.Backward = -1
+                elseif input.KeyCode == Enum.KeyCode.A then
+                    control.Left = -1
+                elseif input.KeyCode == Enum.KeyCode.D then
+                    control.Right = 1
+                elseif input.KeyCode == Enum.KeyCode.Space then
+                    bodyVelocity.Velocity = Vector3.new(0, flySpeed, 0)
+                elseif input.KeyCode == Enum.KeyCode.LeftShift then
+                    bodyVelocity.Velocity = Vector3.new(0, -flySpeed, 0)
                 end
             end)
-            e2=mouse.KeyUp:connect(function(key)
-                if key=="w" then
-                    keys.w=false
-                elseif key=="s" then
-                    keys.s=false
-                elseif key=="a" then
-                    keys.a=false
-                elseif key=="d" then
-                    keys.d=false
+            
+            local flyEndConnection = userInput.InputEnded:Connect(function(input)
+                if input.KeyCode == Enum.KeyCode.W then
+                    control.Forward = 0
+                elseif input.KeyCode == Enum.KeyCode.S then
+                    control.Backward = 0
+                elseif input.KeyCode == Enum.KeyCode.A then
+                    control.Left = 0
+                elseif input.KeyCode == Enum.KeyCode.D then
+                    control.Right = 0
+                elseif input.KeyCode == Enum.KeyCode.Space or input.KeyCode == Enum.KeyCode.LeftShift then
+                    bodyVelocity.Velocity = Vector3.new(0, 0, 0)
                 end
             end)
-            start()
+            
+            local renderStepped = game:GetService("RunService").RenderStepped:Connect(function()
+                if not _G.FlyEnabled then return end
+                
+                local rootPart = character:FindFirstChild("HumanoidRootPart")
+                if rootPart then
+                    local cf = workspace.CurrentCamera.CFrame
+                    local direction = (cf.LookVector * (control.Forward + control.Backward) + 
+                                     cf.RightVector * (control.Left + control.Right))
+                    direction = direction.Unit
+                    
+                    bodyVelocity.Velocity = direction * flySpeed
+                end
+            end)
+            
+            _G.FlyConnections = {flyConnection, flyEndConnection, renderStepped}
         else
-            flying = false
-            if workspace:FindFirstChild("Core") then
-                workspace.Core:Destroy()
+            if _G.FlyConnections then
+                for _, conn in pairs(_G.FlyConnections) do
+                    conn:Disconnect()
+                end
+                _G.FlyConnections = nil
             end
-            if localplayer.Character and localplayer.Character.Humanoid then
-                localplayer.Character.Humanoid.PlatformStand = false
+            
+            local rootPart = character:FindFirstChild("HumanoidRootPart")
+            if rootPart then
+                for _, v in pairs(rootPart:GetChildren()) do
+                    if v:IsA("BodyVelocity") then
+                        v:Destroy()
+                    end
+                end
             end
         end
     end,
