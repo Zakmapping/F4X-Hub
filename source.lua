@@ -30,6 +30,7 @@ local Window = Rayfield:CreateWindow({
 
 local MM2 = Window:CreateTab("MM2 Commands", 10626050781)
 local DeadRails = Window:CreateTab("Dead Rails", 10626050781)
+local Others = Window:CreateTab("Others", 10626050781)
 
 -- MM2 Section
 local MM2Section = MM2:CreateSection("ESP")
@@ -525,6 +526,7 @@ local GoldColorPicker = DeadRails:CreateColorPicker({
     end
 })
 
+local OthersSection = Others:CreateSection("Player Modifications")
 local NoClipToggle = Others:CreateToggle({
     Name = "NoClip",
     CurrentValue = false,
