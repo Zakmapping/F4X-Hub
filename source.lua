@@ -1,3 +1,10 @@
+--[[
+Check "ReadME" and "Version" File before using the loadstring
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Zakmapping/F4X-Hub/refs/heads/main/source.lua"))()
+
+]]
+
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
