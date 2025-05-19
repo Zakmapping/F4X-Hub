@@ -1,4 +1,4 @@
-## V1.0.0 (F4X Hub Beta Version) 🔪:
+## V1.0.0 (F4X Hub Beta Version) 🔪: (Currently)
 - All commands have been tested and work correctly. 
 
 ### Note:
