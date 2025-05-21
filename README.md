@@ -9,15 +9,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/Zakmapping/F4X-Hub/re
 2- Wait until the interface loads and there are tabs such as MM2 Commands, Dead Rails, etc. It contains many commands (we will add many more commands soon) 
 
 # Commands:
-## MM2 Commands:
-- Murderer ESP 🔪
-- Sheriff ESP 🔫
-- Aimbot 🔻
-- Kill Teleporter 😈🔪
-
-## Dead Rails Commands:
-- Zombie ESP 🧟‍♂️🧟‍♀️
-- Gold ESP 🟨
 
 # About Us:
 - Created By Gizmoscat (F4X)
