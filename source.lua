@@ -39,7 +39,6 @@ local Cmds = Window:CreateTab("🔥 Commands 🔥", 4483362458)
 local About = Window:CreateTab("🔱 About Us 🔱", 4483362458)
 local Sus = Window:CreateTab("🥵 Sus Commands 🥵", 4483362458)
 
--- قسم الحماية
 local Section = AC:CreateSection("👑 Anti Cheat 👑")
 
 local Toggle = AC:CreateToggle({
@@ -311,7 +310,6 @@ local AntiBangToggle = AC:CreateToggle({
     end
 })
 
--- قسم الأوامر السخيفة مع التصحيحات
 local JerkSection = Sus:CreateSection("Jerk Tools (Fixed)")
 
 local jerkAnimIds = {
@@ -366,7 +364,6 @@ local jerkButton = Sus:CreateButton({
     end
 })
 
--- إضافة أداة Bang كـ Input مع الانيميشنات الصحيحة
 local BangSection = Sus:CreateSection("Bang Tools")
 
 local bangAnimIds = {
@@ -396,7 +393,6 @@ local BangInput = Sus:CreateInput({
         local humanoid = character:FindFirstChildOfClass("Humanoid")
         if not humanoid then return end
         
-        -- الانتقال خلف اللاعب
         local targetChar = targetPlayer.Character
         if not targetChar then return end
         
@@ -411,11 +407,9 @@ local BangInput = Sus:CreateInput({
             return
         end
         
-        -- الانتقال إلى خلف اللاعب مع مسافة آمنة
-        local offset = CFrame.new(0, 0, -2.5) -- خلف اللاعب بمسافة 2.5 دراسة
+        local offset = CFrame.new(0, 0, -2.5)
         character:MoveTo(targetRoot.Position + offset.Position)
         
-        -- تشغيل الانميشن
         local animator = humanoid:FindFirstChildOfClass("Animator") or humanoid:WaitForChild("Animator")
         local animId = humanoid.RigType == Enum.HumanoidRigType.R6 and bangAnimIds.R6 or bangAnimIds.R15
         local animation = Instance.new("Animation")
@@ -425,7 +419,6 @@ local BangInput = Sus:CreateInput({
         animTrack.Looped = true
         animTrack:Play()
         
-        -- التتبع المستمر للاعب مع إشعار
         Rayfield:Notify({
             Title = "Bang Active",
             Content = "Now banging "..PlayerName.." (Press UNEQUIP to stop)",
@@ -436,14 +429,11 @@ local BangInput = Sus:CreateInput({
         local connection
         connection = game:GetService("RunService").Heartbeat:Connect(function()
             if targetChar and targetRoot and character and humanoid then
-                -- حساب الموضع خلف اللاعب مع الحفاظ على مسافة
                 local backPosition = targetRoot.Position + (targetRoot.CFrame.LookVector * -2.5)
                 character:MoveTo(backPosition)
                 
-                -- توجيه شخصيتك نحو اللاعب
                 humanoid:MoveTo(targetRoot.Position)
             else
-                -- التوقف عند فقدان الهدف
                 connection:Disconnect()
                 if animTrack then
                     animTrack:Stop()
@@ -457,7 +447,6 @@ local BangInput = Sus:CreateInput({
             end
         end)
         
-        -- إضافة طريقة للإيقاف عند نزع الأداة
         local tool = Instance.new("Tool")
         tool.Name = "Bang Tool"
         tool.Parent = game.Players.LocalPlayer.Backpack
@@ -478,7 +467,6 @@ local BangInput = Sus:CreateInput({
     end
 })
 
--- قسم معلومات السكربت مع تعديل الألوان
 local AboutSection = About:CreateSection("About F4X FE")
 
 local Label1 = About:CreateLabel("Created by Gizmoscat (F4X)", 4483362458, false)
@@ -547,7 +535,6 @@ local IY = About:CreateButton({
    end,
 })   
 
--- قسم الأوامر
 local Section = Cmds:CreateSection("😎 Commands 😎")
 
 local noclipConn
